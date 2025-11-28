@@ -1,4 +1,8 @@
-chrome.runtime.onInstalled.addListener(() => {
+chrome.runtime.onInstalled.addListener((details) => {
+    if (details.reason === 'install') {
+        chrome.tabs.create({ url: 'pages/onboarding.html' });
+    }
+
     chrome.contextMenus.create({
         id: 'banana-prompt',
         title: 'Insert 🍌 Prompts',

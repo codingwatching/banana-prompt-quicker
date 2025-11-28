@@ -58,7 +58,7 @@
     },
     {
         "title": "旅行手账图",
-        "preview": "https://pbs.twimg.com/media/G6Ok_aracAIyZeU.jpg",
+        "preview": "https://cdn.jsdelivr.net/gh/glidea/banana-prompt-quicker@main/images/journal.jpg",
         "prompt": "生成 [中国珠海] 的旅游指南，要求手账形式，画面要纯中文。",
         "author": "@canghecode",
         "link": "https://x.com/canghecode/status/1991618641335578739",
@@ -77,7 +77,7 @@
     },
     {
         "title": "生物标本展示图",
-        "preview": "https://pbs.twimg.com/media/G6MjRHTbYAAQo0E?format=jpg&name=medium",
+        "preview": "https://cdn.jsdelivr.net/gh/glidea/banana-prompt-quicker@main/images/sample.jpg",
         "prompt": "绘制【XX】的标本并且将其的器官部位进行标本展示的标记中文，用于教学展示，非常的直观，放置在干净的纯色背景下，高清逼真还原。",
         "author": "@berryxia_ai",
         "link": "https://x.com/berryxia_ai/status/1991474410939940867",
@@ -250,7 +250,7 @@
     },
     {
         "title": "鸟山明风格",
-        "preview": "https://i.mji.rip/2025/11/23/51d26b85abee7a018dd803138d121b8e.jpeg",
+        "preview": "https://cdn.jsdelivr.net/gh/glidea/banana-prompt-quicker@main/images/toriyama.jpeg",
         "prompt": "转成鸟山明风格",
         "author": "Official",
         "mode": "edit",
@@ -259,7 +259,7 @@
     },
     {
         "title": "一生全貌",
-        "preview": "https://pbs.twimg.com/media/G6QsVWEWQAA-LKC.jpg?format=jpg&name=large",
+        "preview": "https://cdn.jsdelivr.net/gh/glidea/banana-prompt-quicker@main/images/life.jpg",
         "prompt": "一个照片现实3x3网格拼贴，展示一个帅气男人的一生，带有深色波浪头发和温暖眼睛，在一生中庆祝各种节日。\n左上（5岁）：一个可爱的小男孩穿着针织圣诞毛衣，在装饰树前拿着玩具卡车。\n上中（15岁）：一个头发较长的青少年坐在节日餐桌前，微笑。\n右上（25岁）：一个年轻成人穿着西装戴圣诞帽，在节日派对上拿着饮料。\n左中（35岁）：男人带有胡须的时尚肖像，穿着酒红色天鹅绒衬衫，看起来自信。\n中中（45岁）：男人在家庭感恩节晚餐上切火鸡。\n右中（55岁）：头发灰白的男人点燃烛台，看起来尊严。\n左下（65岁）：银发男人抱着孙子在圣诞树前。\n下中（75岁）：老人户外在春天设置，或许寻找复活节彩蛋，穿着米色毛衣。\n右下（85岁）：非常老的男人坐在壁炉边的扶手椅上，拿着包装礼物，看起来快乐。\n风格：电影照明、高分辨率、8k、高度细节，确保面部特征作为同一个人自然老化跨所有面板可识别。在每个面板底部用白色文字标签：'Age 5'，'Age 15'等",
         "author": "@NanoBanana_labs",
         "link": "https://x.com/NanoBanana_labs/status/1991765684297035867",
