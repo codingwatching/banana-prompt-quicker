@@ -5,6 +5,7 @@
 * [Google AI Studio](https://aistudio.google.com/)
 * [Gemini Enterprise](https://business.gemini.google/)
 * [kokorolab](https://kokorolab.net/zh/home) 👈🏻 金主爸爸。欢迎更多垂类生图场景的应用合作！
+* 任意网站输入框，右键插入！
 * 扩展中...
 
 ## 📸 预览
@@ -60,7 +61,8 @@ https://github.com/bxb100/Scripts/raw/refs/heads/main/banana-prompt-quicker/scri
 
 **相关垂类生图应用（穿搭，学习...）可联系合作！**
 
-## Release NOTE
+<details>
+<summary><strong>Release NOTE</strong></summary>
 
 ### 未来
   * 添加更多实用性提示词。按风格推荐穿搭，虚拟旅游，偶像合照...
@@ -92,6 +94,8 @@ https://github.com/bxb100/Scripts/raw/refs/heads/main/banana-prompt-quicker/scri
 
 ### V1.2.1
   * 修复 Gemini 官网按钮失效，并支持远程热修复
+
+</details>
 
 
 ## 🤝 贡献提示词
