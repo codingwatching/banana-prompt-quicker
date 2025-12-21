@@ -122,7 +122,7 @@ async function main() {
 
         // 4. 压缩
         console.log('🗜️  压缩中 (使用 macOS sips)...');
-        compressImageWithSips(tempPath, outputPath, 200);
+        compressImageWithSips(tempPath, outputPath, 300);
 
         // 5. 清理
         fs.unlinkSync(tempPath);
