@@ -1,10 +1,10 @@
 class AIStudioSite extends BaseSite {
     async findPromptInput() {
-        return this.findElement('aistudio', 'promptInput', 'ms-prompt-input-wrapper textarea');
+        return this.findElement('aistudio', 'promptInput', 'ms-prompt-box textarea');
     }
 
     async findTargetButton() {
-        return this.findElement('aistudio', 'insertButton', 'ms-run-button button');
+        return this.findElement('aistudio', 'insertButton', 'ms-prompt-box ms-run-button button');
     }
 
     getCurrentTheme() {
