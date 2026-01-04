@@ -17,6 +17,11 @@
                 "host": "kokorolab.net",
                 "promptInput": "body > div.ant-app.css-var-_R_2ivb_ > div > div > div.h-\\[100dvh\\].pt-12 > div > div:nth-child(1) > div > div > div.sidebar-scroll.space-y-4.p-3.mt-3 > div:nth-child(3) > div > span > textarea",
                 "insertButton": "body > div.ant-app.css-var-_R_2ivb_ > div > div > div.h-\\[100dvh\\].pt-12 > div > div:nth-child(1) > div > div > div.sidebar-scroll.space-y-4.p-3.mt-3 > div:nth-child(3) > div > div:nth-child(3) > div > div:nth-child(1) > div"
+            },
+            {
+                "host": "chatfire.site",
+                "promptInput": "#app > div > div.layout-wrapper > div.content-wrapper > div > main > div > div > div.material-input-container.shadow-sm > div.input-wrapper > div.flex.mb-2 > div.n-input.n-input--textarea.n-input--autosize.n-input--stateful.prompt-input > div.n-input-wrapper > div.n-input__textarea.n-scrollbar > textarea",
+                "insertButton": "#app > div > div.layout-wrapper > div.content-wrapper > div > main > div > div > div.material-input-container.shadow-sm > div.input-wrapper > div.footer.flex.justify-between.items-center > div.submit-button"
             }
         ]
     },
