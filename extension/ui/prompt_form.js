@@ -18,6 +18,81 @@ window.UI.PromptForm = class PromptForm {
 
         this.overlay = null;
         this.cleanupFns = [];
+        this._injectStyles();
+    }
+
+    _injectStyles() {
+        if (document.getElementById('apple-prompt-styles')) return;
+        const style = document.createElement('style');
+        style.id = 'apple-prompt-styles';
+        style.textContent = `
+            @keyframes apple-pop {
+                0% { opacity: 0; transform: scale(0.98) translateY(10px); }
+                100% { opacity: 1; transform: scale(1) translateY(0); }
+            }
+            .apple-modal-content {
+                animation: apple-pop 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .apple-input:focus {
+                background: #ffffff !important;
+                box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15) !important;
+                border-color: #007AFF !important;
+            }
+            .apple-segmented-control {
+                display: flex;
+                background: rgba(118, 118, 128, 0.12);
+                padding: 2px;
+                border-radius: 12px;
+                position: relative;
+                user-select: none;
+            }
+            .apple-segmented-slider {
+                position: absolute;
+                top: 2px;
+                bottom: 2px;
+                background: #ffffff;
+                border-radius: 10px;
+                box-shadow: 0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);
+                transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 0;
+            }
+            .apple-segmented-option {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                padding: 10px;
+                border-radius: 10px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: 500;
+                color: #8e8e93;
+                z-index: 1;
+                transition: color 0.2s;
+            }
+            .apple-segmented-option.active {
+                color: #000000;
+                font-weight: 600;
+            }
+            .apple-dropdown-option {
+                padding: 12px 16px;
+                cursor: pointer;
+                transition: all 0.2s;
+                font-size: 14px;
+                border-radius: 10px;
+                margin: 2px 6px;
+            }
+            .apple-dropdown-option:hover {
+                background: rgba(0, 0, 0, 0.05);
+            }
+            .apple-dropdown-option.selected {
+                background: rgba(0, 122, 255, 0.1) !important;
+                color: #007AFF !important;
+                font-weight: 600;
+            }
+        `;
+        document.head.appendChild(style);
     }
 
     show(existingPrompt = null) {
@@ -45,37 +120,45 @@ window.UI.PromptForm = class PromptForm {
 
         // Create dialog
         const dialog = h('div', {
-            style: `background: ${colors.surface}; padding: ${mobile ? '24px' : '32px'}; border-radius: 20px; width: ${mobile ? '90%' : '480px'}; max-width: 90%; box-shadow: 0 20px 60px ${colors.shadow}; display: flex; flex-direction: column; gap: 16px; color: ${colors.text};`
+            className: 'apple-modal-content',
+            style: `background: ${colors.surface}; padding: ${mobile ? '24px' : '32px'}; border-radius: 24px; width: ${mobile ? '90%' : '520px'}; max-width: 95%; box-shadow: 0 30px 80px ${colors.shadow}; display: flex; flex-direction: column; gap: 20px; color: ${colors.text}; backdrop-filter: blur(20px); border: 1px solid ${colors.border}40;`
         });
 
-        // Title
-        const title = h('h3', {
-            style: 'margin: 0 0 4px 0; font-size: 20px; font-weight: 600;'
-        }, existingPrompt ? '编辑自定义 Prompt' : '添加自定义 Prompt');
+        // Header
+        const header = h('div', { style: 'display: flex; justify-content: space-between; align-items: flex-start;' }, [
+            h('div', { style: 'display: flex; flex-direction: column; gap: 4px;' }, [
+                h('h3', {
+                    style: 'margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.5px;'
+                }, existingPrompt ? '编辑 Prompt' : '新建 Prompt'),
+                h('span', { style: `font-size: 13px; color: ${colors.textSecondary};` }, '填写详细信息以自定义您的提示词')
+            ]),
+            h('button', {
+                innerHTML: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`,
+                style: `background: ${colors.inputBg}; border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: ${colors.textSecondary}; transition: all 0.2s;`,
+                onclick: () => this.close(),
+                onmouseenter: (e) => e.target.style.background = colors.surfaceHover,
+                onmouseleave: (e) => e.target.style.background = colors.inputBg
+            })
+        ]);
 
-        // Title Input
-        const titleInput = this.createInput('标题');
-        if (existingPrompt) titleInput.value = existingPrompt.title;
-
-        // Mode Selection (Moved up)
+        // Mode Selection (Segmented Control style)
         const modeContainer = this.createModeSelection();
 
-        // Image Upload (Preview)
-        const imageContainer = this.createImageUpload(existingPrompt);
+        // Form Sections
+        const mainSection = h('div', { style: 'display: flex; flex-direction: column; gap: 16px;' });
 
-        // Reference Images Upload
-        const refImagesContainer = this.createReferenceImagesUpload();
+        // Title Input
+        const titleInput = this.createInput('给它起个名字...');
+        if (existingPrompt) titleInput.value = existingPrompt.title;
 
         // Category & Sub-Category Row
         const categoryRow = h('div', {
             style: 'display: flex; gap: 12px; align-items: flex-start;'
         });
 
-        // Category Dropdown
         const categoryContainer = this.createCategoryDropdown(addCategories);
-        categoryContainer.style.flex = '1';
+        categoryContainer.style.flex = '1.2';
 
-        // Sub-Category Input
         const subCategoryInput = this.createInput('子分类 (可选)');
         subCategoryInput.style.flex = '1';
         if (existingPrompt?.sub_category) subCategoryInput.value = existingPrompt.sub_category;
@@ -83,8 +166,25 @@ window.UI.PromptForm = class PromptForm {
         categoryRow.appendChild(categoryContainer);
         categoryRow.appendChild(subCategoryInput);
 
+        // Media Section (Cover + Reference)
+        const mediaSection = h('div', {
+            style: 'display: grid; grid-template-columns: 140px 1fr; gap: 16px;'
+        });
+
+        const imageContainer = this.createImageUpload(existingPrompt);
+        const refImagesContainer = this.createReferenceImagesUpload();
+
+        mediaSection.appendChild(h('div', { style: 'display: flex; flex-direction: column; gap: 8px;' }, [
+            h('span', { style: `font-size: 12px; font-weight: 600; color: ${colors.textSecondary}; text-transform: uppercase;` }, '封面图 (可选)'),
+            imageContainer
+        ]));
+        mediaSection.appendChild(h('div', { style: 'display: flex; flex-direction: column; gap: 8px;' }, [
+            h('span', { style: `font-size: 12px; font-weight: 600; color: ${colors.textSecondary}; text-transform: uppercase;` }, '参考图 (可选)'),
+            refImagesContainer
+        ]));
+
         // Prompt Content
-        const promptInput = this.createInput('Prompt 内容', true);
+        const promptInput = this.createInput('在此输入 Prompt 内容...', true);
         if (existingPrompt) promptInput.value = existingPrompt.prompt;
 
         // Buttons
@@ -95,13 +195,15 @@ window.UI.PromptForm = class PromptForm {
             subCategoryInput
         );
 
-        dialog.appendChild(title);
-        dialog.appendChild(titleInput);
-        dialog.appendChild(modeContainer); // Mode is now here
-        dialog.appendChild(imageContainer);
-        dialog.appendChild(refImagesContainer);
-        dialog.appendChild(categoryRow);   // Grouped row
-        dialog.appendChild(promptInput);
+        dialog.appendChild(header);
+        dialog.appendChild(modeContainer);
+
+        mainSection.appendChild(titleInput);
+        mainSection.appendChild(categoryRow);
+        mainSection.appendChild(mediaSection);
+        mainSection.appendChild(promptInput);
+
+        dialog.appendChild(mainSection);
         dialog.appendChild(btnContainer);
 
         this.overlay.appendChild(dialog);
@@ -114,15 +216,8 @@ window.UI.PromptForm = class PromptForm {
 
         const input = h(isTextarea ? 'textarea' : 'input', {
             placeholder,
-            style: `width: 100%; padding: ${mobile ? '14px 16px' : '12px 16px'}; border: 1px solid ${colors.inputBorder}; border-radius: 12px; background: ${colors.inputBg}; color: ${colors.text}; font-size: 14px; outline: none; box-sizing: border-box; transition: all 0.2s; ${isTextarea ? 'min-height: 120px; resize: vertical; font-family: inherit;' : ''}`,
-            onfocus: (e) => {
-                e.target.style.borderColor = colors.primary;
-                e.target.style.boxShadow = `0 0 0 3px ${colors.primary}15`;
-            },
-            onblur: (e) => {
-                e.target.style.borderColor = colors.inputBorder;
-                e.target.style.boxShadow = 'none';
-            }
+            className: 'apple-input',
+            style: `width: 100%; padding: ${mobile ? '14px 16px' : '12px 16px'}; border: 1px solid transparent; border-radius: 14px; background: ${colors.inputBg}; color: ${colors.text}; font-size: 15px; outline: none; box-sizing: border-box; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); ${isTextarea ? 'min-height: 140px; resize: vertical; font-family: inherit; line-height: 1.5;' : ''}`,
         });
 
         return input;
@@ -133,7 +228,7 @@ window.UI.PromptForm = class PromptForm {
         const { colors } = this;
 
         const imageContainer = h('div', {
-            style: `width: 100%; height: 140px; border: 1px dashed ${colors.border}; border-radius: 12px; background: ${colors.inputBg}; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; transition: all 0.2s;`,
+            style: `width: 100%; height: 100px; border: 1.5px dashed ${colors.border}; border-radius: 14px; background: ${colors.inputBg}; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; transition: all 0.2s;`,
             onmouseenter: (e) => {
                 if (!this.state.selectedFile && !this.state.previewUrl) {
                     e.target.style.borderColor = colors.primary;
@@ -161,8 +256,8 @@ window.UI.PromptForm = class PromptForm {
         });
 
         const placeholderText = h('span', {
-            style: `font-size: 13px; color: ${colors.textSecondary}; font-weight: 500;`
-        }, '点击上传封面图');
+            style: `font-size: 12px; color: ${colors.textSecondary}; font-weight: 500;`
+        }, '上传封面');
 
         const placeholderContainer = h('div', {
             style: 'display: flex; flex-direction: column; align-items: center; pointer-events: none;'
@@ -246,19 +341,16 @@ window.UI.PromptForm = class PromptForm {
             style: 'display: flex; justify-content: space-between; align-items: center;'
         });
 
-        const label = h('span', {
-            style: `font-size: 14px; font-weight: 500; color: ${colors.text};`
-        }, '参考图 (可选, 最多4张)');
 
         const countLabel = h('span', {
-            style: `font-size: 12px; color: ${colors.textSecondary};`
-        }, `${this.state.referenceImages.length}/4`);
+            style: `font-size: 12px; color: ${colors.textSecondary}; font-weight: 500;`
+        }, `${this.state.referenceImages.length} / 4`);
 
         header.appendChild(label);
         header.appendChild(countLabel);
 
         const listContainer = h('div', {
-            style: 'display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;'
+            style: 'display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;'
         });
 
         const updateList = () => {
@@ -268,7 +360,7 @@ window.UI.PromptForm = class PromptForm {
             // Render existing images
             this.state.referenceImages.forEach((imgData, index) => {
                 const item = h('div', {
-                    style: `position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden; border: 1px solid ${colors.border};`
+                    style: `position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; border: 1px solid ${colors.border}40;`
                 });
 
                 const img = h('img', {
@@ -293,7 +385,7 @@ window.UI.PromptForm = class PromptForm {
             // Add button (if less than 4)
             if (this.state.referenceImages.length < 4) {
                 const addBtn = h('div', {
-                    style: `aspect-ratio: 1; border: 1px dashed ${colors.border}; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: ${colors.inputBg}; transition: all 0.2s;`,
+                    style: `aspect-ratio: 1; border: 1.5px dashed ${colors.border}; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: ${colors.inputBg}; transition: all 0.2s;`,
                     onmouseenter: (e) => {
                         e.target.style.borderColor = colors.primary;
                         e.target.style.background = colors.surfaceHover;
@@ -365,7 +457,9 @@ window.UI.PromptForm = class PromptForm {
         });
 
         const categoryTrigger = h('div', {
-            style: `width: 100%; padding: ${mobile ? '14px 16px' : '12px 16px'}; border: 1px solid ${colors.inputBorder}; border-radius: 12px; background: ${colors.inputBg}; color: ${colors.text}; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; box-sizing: border-box;`
+            style: `width: 100%; padding: ${mobile ? '14px 16px' : '12px 16px'}; border: 1px solid transparent; border-radius: 14px; background: ${colors.inputBg}; color: ${colors.text}; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; box-sizing: border-box; transition: all 0.2s;`,
+            onmouseenter: (e) => e.target.style.background = colors.surfaceHover,
+            onmouseleave: (e) => e.target.style.background = colors.inputBg
         }, [categoryTriggerText, categoryArrow]);
 
         const categoryOptions = h('div', {
@@ -376,25 +470,9 @@ window.UI.PromptForm = class PromptForm {
             categoryOptions.innerHTML = '';
             categories.forEach(cat => {
                 const isSelected = cat === this.state.selectedCategory;
-                const baseStyle = 'padding: 10px 16px; cursor: pointer; transition: all 0.2s; font-size: 14px;';
-                const selectedStyle = isSelected
-                    ? `background: ${colors.primary}15; color: ${colors.primary}; font-weight: 600;`
-                    : `background: transparent; color: ${colors.text};`;
-
                 const option = h('div', {
-                    style: baseStyle + selectedStyle,
-                    onmouseenter: (e) => {
-                        if (!isSelected) e.target.style.background = colors.surfaceHover;
-                        e.target.style.boxShadow = `0 2px 8px ${colors.shadow}`;
-                    },
-                    onmouseleave: (e) => {
-                        if (!isSelected) {
-                            e.target.style.background = 'transparent';
-                        } else {
-                            e.target.style.background = `${colors.primary}15`;
-                        }
-                        e.target.style.boxShadow = 'none';
-                    },
+                    className: `apple-dropdown-option ${isSelected ? 'selected' : ''}`,
+                    style: isSelected ? '' : `color: ${colors.text};`,
                     onclick: (e) => {
                         e.stopPropagation();
                         this.state.selectedCategory = cat;
@@ -437,36 +515,42 @@ window.UI.PromptForm = class PromptForm {
         const { h } = window.DOM;
         const { colors } = this;
 
+        const modes = [
+            { value: 'generate', label: '文生图', icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>` },
+            { value: 'edit', label: '编辑', icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>` }
+        ];
+
+        const selectedIndex = modes.findIndex(m => m.value === this.state.selectedMode);
+
         const modeContainer = h('div', {
-            style: `display: flex; background: ${colors.inputBg}; padding: 4px; border-radius: 10px; border: 1px solid ${colors.inputBorder};`
+            className: 'apple-segmented-control',
+            style: `background: ${colors.inputBg};`
         });
 
-        const createOption = (value, label, iconSvg) => {
-            const isSelected = this.state.selectedMode === value;
+        const slider = h('div', {
+            className: 'apple-segmented-slider',
+            style: `width: calc(50% - 2px); transform: translateX(${selectedIndex * 100}%); background: ${colors.surface};`
+        });
+
+        modeContainer.appendChild(slider);
+
+        modes.forEach((mode, index) => {
+            const isSelected = this.state.selectedMode === mode.value;
             const option = h('div', {
-                style: `flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px; border-radius: 8px; cursor: pointer; font-size: 13px; transition: all 0.2s; font-weight: ${isSelected ? '600' : '400'}; color: ${isSelected ? colors.text : colors.textSecondary}; background: ${isSelected ? colors.surface : 'transparent'}; box-shadow: ${isSelected ? `0 2px 8px ${colors.shadow}` : 'none'};`,
+                className: `apple-segmented-option ${isSelected ? 'active' : ''}`,
+                style: isSelected ? '' : `color: ${colors.textSecondary};`,
                 onclick: () => {
-                    this.state.selectedMode = value;
+                    if (this.state.selectedMode === mode.value) return;
+                    this.state.selectedMode = mode.value;
                     const newContainer = this.createModeSelection();
                     modeContainer.parentNode.replaceChild(newContainer, modeContainer);
                 }
-            });
-
-            const icon = h('span', {
-                innerHTML: iconSvg,
-                style: 'display: flex; align-items: center;'
-            });
-
-            option.appendChild(icon);
-            option.appendChild(document.createTextNode(label));
-            return option;
-        };
-
-        const generateIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`;
-        const editIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`;
-
-        modeContainer.appendChild(createOption('generate', '文生图', generateIcon));
-        modeContainer.appendChild(createOption('edit', '编辑', editIcon));
+            }, [
+                h('span', { innerHTML: mode.icon, style: 'display: flex; align-items: center;' }),
+                document.createTextNode(mode.label)
+            ]);
+            modeContainer.appendChild(option);
+        });
 
         return modeContainer;
     }
@@ -480,7 +564,7 @@ window.UI.PromptForm = class PromptForm {
         });
 
         const cancelBtn = h('button', {
-            style: `padding: ${mobile ? '12px 24px' : '10px 20px'}; border: 1px solid ${colors.border}; border-radius: 12px; background: transparent; color: ${colors.text}; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.25s ease;`,
+            style: `padding: ${mobile ? '12px 24px' : '12px 24px'}; border: none; border-radius: 14px; background: ${colors.inputBg}; color: ${colors.text}; cursor: pointer; font-size: 15px; font-weight: 600; transition: all 0.2s ease;`,
             onclick: () => this.close()
         }, '取消');
 
@@ -496,7 +580,7 @@ window.UI.PromptForm = class PromptForm {
         }
 
         const saveBtn = h('button', {
-            style: `padding: ${mobile ? '12px 24px' : '10px 20px'}; border: none; border-radius: 12px; background: ${colors.primary}; color: white; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.25s ease; box-shadow: 0 2px 8px ${colors.shadow};`,
+            style: `padding: ${mobile ? '12px 24px' : '12px 32px'}; border: none; border-radius: 14px; background: ${colors.primary}; color: white; cursor: pointer; font-size: 15px; font-weight: 700; transition: all 0.2s ease; box-shadow: 0 4px 12px ${colors.primary}40;`,
             onclick: async () => {
                 const titleVal = titleInput.value.trim();
                 const promptVal = promptInput.value.trim();
