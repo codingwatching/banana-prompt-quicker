@@ -207,49 +207,20 @@ h2 {
 .card-5 { animation: float-1 6.5s ease-in-out infinite; animation-delay: 2s; }
 
 /* Slide 2: Features Grid */
-.features-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+/* Slide 2: Guide Animation */
+.guide-container {
     margin-top: 40px;
-}
-
-.feature-card {
-    background: var(--surface);
-    padding: 32px 24px;
-    border-radius: var(--radius-lg);
-    text-align: center;
-    transition: transform 0.3s ease;
-}
-
-.feature-card:hover {
-    transform: translateY(-5px);
-    background: var(--surface-hover);
-}
-
-.icon-box {
-    width: 48px;
-    height: 48px;
-    background: var(--background);
-    border-radius: 12px;
+    width: 100%;
     display: flex;
-    align-items: center;
     justify-content: center;
-    margin: 0 auto 20px;
-    color: var(--accent);
-    box-shadow: var(--shadow-sm);
 }
 
-.feature-card h3 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-
-.feature-card p {
-    font-size: 14px;
-    color: var(--text-secondary);
-    line-height: 1.4;
+.guide-gif {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
 }
 
 /* Slide 3: Platforms Grid */

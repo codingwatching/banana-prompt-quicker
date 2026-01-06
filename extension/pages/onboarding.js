@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const slides = document.querySelector('.slides');
     const dots = document.querySelectorAll('.dot');
     const btnNext = document.getElementById('btn-next');
-    const btnSkip = document.getElementById('btn-skip');
+    // const btnSkip = document.getElementById('btn-skip');
 
     let currentSlide = 0;
     const totalSlides = 3;
@@ -21,10 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update buttons
         if (currentSlide === totalSlides - 1) {
             btnNext.textContent = '开始使用';
-            btnSkip.style.display = 'none';
+            // btnSkip.style.display = 'none';
         } else {
             btnNext.textContent = '下一步';
-            btnSkip.style.display = 'block';
+            // btnSkip.style.display = 'block';
         }
     }
 
@@ -42,9 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    btnSkip.addEventListener('click', () => {
-        updateSlide(totalSlides - 1);
-    });
+    // btnSkip.addEventListener('click', () => {
+    //     updateSlide(totalSlides - 1);
+    // });
 
     dots.forEach(dot => {
         dot.addEventListener('click', () => {
